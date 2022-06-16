@@ -30,8 +30,8 @@ export class UserController{
   })
   @UseGuards(AuthGuard())
   @ApiBearerAuth()
-  findOne(@Param("id") id:string):Promise<User>{
-    return this.userService.findOne(id)
+  findOne(@Param("id") Id:string){
+    return this.userService.findById(Id)
   }
 
   @Post()

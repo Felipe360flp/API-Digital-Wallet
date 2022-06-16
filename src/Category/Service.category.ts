@@ -23,11 +23,11 @@ export class CategoryService {
     return this.prisma.category.findMany();
   }
 
-  async findById(id: string){
-    const record = await this.prisma.category.findUnique({ where: { id }});
+  async findById(Id: string){
+    const record = await this.prisma.category.findUnique({ where: { Id }});
 
     if (!record) {
-      throw new NotFoundException(`Registro com o '${id}' não encontrado.`)
+      throw new NotFoundException(`Registro com o '${Id}' não encontrado.`)
     }
 
     return record;
@@ -47,7 +47,7 @@ export class CategoryService {
       .create({
         data,
         select: {
-          id: true,
+          Id: true,
           Title:true,
           Description:true
         }
@@ -56,27 +56,27 @@ export class CategoryService {
 
 
 
-    async update(id: string, dto: UpdateCategoryDto){
-    await this.findOne(id);
+    async update(Id: string, dto: UpdateCategoryDto){
+    await this.findOne(Id);
     const data: Prisma.CategoryUpdateInput = {
       Title:dto.Title,
     }
 
     return this.prisma.category
     .update({
-      where: { id },
+      where: { Id },
       data,
       select: {
-        id: true,
+        Id: true,
         Title:true,
         Description:true
       },
     }).catch(handleError);
   }
 
-  async delete(id: string) {
-    await this.findOne(id);
-    await this.prisma.category.delete({ where: { id } });
+  async delete(Id: string) {
+    await this.findOne(Id);
+    await this.prisma.category.delete({ where: { Id } });
   }
 
 }

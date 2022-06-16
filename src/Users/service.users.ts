@@ -19,13 +19,13 @@ export class UserService {
     return this.prisma.user.findMany();
   }
 
-  async findById(id: string){
+  async findById(Id: string){
     const record = await this.prisma.user.findUnique({
-      where: { id },
+      where: { Id },
     });
 
     if (!record) {
-      throw new NotFoundException(`Registro com o ID '${id}' não encontrado.`);
+      throw new NotFoundException(`Registro com o ID '${Id}' não encontrado.`);
     }
     return record;
   }
@@ -50,7 +50,7 @@ export class UserService {
       .create({
           data,
           select: {
-            id:true,
+            Id:true,
             Name:true,
             Email:true,
             Password:true,
@@ -64,8 +64,8 @@ export class UserService {
     }
 
 
-  async update(id: string,dto: UpdateUserDto){
-    await this.findById(id);
+  async update(Id: string,dto: UpdateUserDto){
+    await this.findById(Id);
 
     const data: Prisma.UserUpdateInput = {
       Name:dto.Name,
@@ -80,27 +80,21 @@ export class UserService {
 
     return this.prisma.category
       .update({
-      where: { id },
+      where: { Id },
       data,
       select: {
-        id:true,
-          Name:true,
-          Email:true,
-          Password:true,
-        category: {
-          select: {
-            Title: true
-          }
-        }
+        Id:true,
+          Title:true,
+          Description:true,
       },
     }).catch(handleError);
   }
 
 
-  async delete(id: string) {
-    await this.findById(id);
+  async delete(Id: string) {
+    await this.findById(Id);
 
-    await this.prisma.category.delete({ where: { id } });
+    await this.prisma.category.delete({ where: { Id } });
   }
 
 }
