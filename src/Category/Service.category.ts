@@ -9,7 +9,7 @@ import { handleError } from 'src/Utils/handle-error.util';
 import { Prisma } from '@prisma/client';
 import { isUppercase } from 'class-validator';
 import { CreateUserDto } from 'src/Users/dto/users-create.dto';
-import { User } from 'src/Users/entities/Users.entity';
+import { User } from 'src/Users/entities/users.entity';
 
 
 @Injectable()
