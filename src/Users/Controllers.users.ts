@@ -3,7 +3,7 @@ import { ApiTags,ApiOperation,ApiBearerAuth} from '@nestjs/swagger';
 import { exit } from 'process';
 import { CreateUserDto } from './dto/users-create.dto';
 import {UpdateUserDto} from './dto/users-update.dto';
-import { User } from './entities/Users.entity';
+import { User } from './entities/users.entity';
 import { UserService } from './service.users';
 import { AuthGuard } from '@nestjs/passport';
 import { IsUppercase } from 'class-validator';
