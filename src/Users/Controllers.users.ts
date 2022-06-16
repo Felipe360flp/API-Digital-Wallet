@@ -36,8 +36,10 @@ export class UserController{
 
   @Post()
   @ApiOperation({
-    summary: 'Adicionar uma categoria (Permissão)',
+    summary: 'Adicionar um usuário',
   })
+  @UseGuards(AuthGuard())
+  @ApiBearerAuth()
   @IsUppercase()
   create(@Body() createUserDto: CreateUserDto) {
 
@@ -58,8 +60,10 @@ export class UserController{
   @IsUppercase()
   @Patch(':id')
   @ApiOperation({
-    summary: 'Alterar uma categoria',
+    summary: 'Alterar dados de um usuário',
   })
+  @UseGuards(AuthGuard())
+  @ApiBearerAuth()
   update(@Param('id') id: string, @Body() dto: UpdateUserDto){
     return this.userService.update(id, dto);
   }
