@@ -6,6 +6,7 @@ import {UpdateUserDto} from './dto/users-update.dto';
 import { User } from './entities/Users.entity';
 import { UserService } from './service.users';
 import { AuthGuard } from '@nestjs/passport';
+import { IsUppercase } from 'class-validator';
 
 
 @ApiTags("Users")
@@ -33,18 +34,37 @@ export class UserController{
     return this.userService.findOne(id)
   }
 
+  @Post()
+  @ApiOperation({
+    summary: 'Adicionar uma categoria (Permissão)',
+  })
+  @IsUppercase()
+  create(@Body() createUserDto: CreateUserDto) {
 
-    @Patch(':id')
-    @ApiOperation({
-      summary: 'Alterar um usuário',
-    })
-      @UseGuards(AuthGuard())
-      @ApiBearerAuth()
-      update(@Param('id') id: string, @Body() dto: UpdateUserDto): Promise<User> {
-        return this.userService.update(id, dto);
+    if(
+      !createUserDto.Name ||
+      !createUserDto.Email ||
+      !createUserDto.Password||
+      !createUserDto.categoryID
+      ){
+        return console.log("it is necessary to fill in all the fields!")
       }
+      else{
+      return this.userService.create(createUserDto);
+      }
+  }
 
-      @Delete(':id')
+
+  @IsUppercase()
+  @Patch(':id')
+  @ApiOperation({
+    summary: 'Alterar uma categoria',
+  })
+  update(@Param('id') id: string, @Body() dto: UpdateUserDto){
+    return this.userService.update(id, dto);
+  }
+
+  @Delete(':id')
       @ApiOperation({
         summary: 'Deletar um usuário',
       })
@@ -56,3 +76,5 @@ export class UserController{
   }
 
 }
+
+

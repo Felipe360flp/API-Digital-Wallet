@@ -26,5 +26,5 @@ Password:string;
 @ApiProperty({
   example: 'abbb7373-c58c-4c14-bd06-c7ae0a703ea7',
 })
-category:string[];
+categoryID:string;
 }
