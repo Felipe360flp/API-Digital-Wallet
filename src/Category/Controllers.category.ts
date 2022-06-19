@@ -10,8 +10,6 @@ import { Category } from './entities/category-entity';
 import { CategoryService } from './Service.category';
 
 @ApiTags('Category')
-@UseGuards(AuthGuard())
-@ApiBearerAuth()
 @Controller('Category')
 export class CategoryController {
   constructor(private categoryService: CategoryService) {}
@@ -20,6 +18,8 @@ export class CategoryController {
   @ApiOperation({
     summary: 'Listar os tipos de categoria disponíveis',
   })
+  @UseGuards(AuthGuard())
+  @ApiBearerAuth()
   findAll() {
     return this.categoryService.findAll();
   }
@@ -28,6 +28,8 @@ export class CategoryController {
   @ApiOperation({
     summary: 'Localizar uma categoria',
   })
+  @UseGuards(AuthGuard())
+  @ApiBearerAuth()
   findOne(@Param('id') id: string){
     return this.categoryService.findOne(id);
   }
@@ -54,6 +56,8 @@ export class CategoryController {
   @ApiOperation({
     summary: 'Alterar uma categoria',
   })
+  @UseGuards(AuthGuard())
+  @ApiBearerAuth()
   update(@Param('id') id: string, @Body() dto: UpdateCategoryDto){
     return this.categoryService.update(id, dto);
   }
@@ -63,6 +67,8 @@ export class CategoryController {
     summary: 'Deletar uma categoria',
   })
   @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(AuthGuard())
+  @ApiBearerAuth()
   delete(@Param('id') id: string) {
     this.categoryService.delete(id);
   }

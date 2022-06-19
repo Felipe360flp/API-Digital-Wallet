@@ -38,8 +38,7 @@ export class UserController{
   @ApiOperation({
     summary: 'Adicionar um usuário',
   })
-  @UseGuards(AuthGuard())
-  @ApiBearerAuth()
+
   @IsUppercase()
   create(@Body() createUserDto: CreateUserDto) {
 
