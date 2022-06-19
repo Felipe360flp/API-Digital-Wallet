@@ -14,8 +14,6 @@ $ npm install
 
 $ npm i @nestjs/mapped-types
 
-## Installation Nest
-
 $npm i bcrypt
 
 $import * as bcrypt from 'bcrypt';
