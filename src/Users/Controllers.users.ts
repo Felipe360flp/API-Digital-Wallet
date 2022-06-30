@@ -7,7 +7,8 @@ import { User } from './entities/users.entity';
 import { UserService } from './service.users';
 import { AuthGuard } from '@nestjs/passport';
 import { IsUppercase } from 'class-validator';
-
+import { isAdmin } from 'src/Utils/isAdmin.utils';
+import { LoggedUser } from 'src/Auth/logged-user.decorator';
 
 @ApiTags("Users")
 @Controller("Users")
@@ -63,7 +64,8 @@ export class UserController{
   })
   @UseGuards(AuthGuard())
   @ApiBearerAuth()
-  update(@Param('id') id: string, @Body() dto: UpdateUserDto){
+  update(@Param('id') id: string, @Body() dto: UpdateUserDto,@LoggedUser() user:User){
+    isAdmin(user);
     return this.userService.update(id, dto);
   }
 
@@ -74,7 +76,8 @@ export class UserController{
       @HttpCode(HttpStatus.NO_CONTENT)
       @UseGuards(AuthGuard())
       @ApiBearerAuth()
-      delete(@Param('id') id: string) {
+      delete(@Param('id') id: string,@LoggedUser() user:User) {
+        isAdmin(user);
       this.userService.delete(id);
   }
 

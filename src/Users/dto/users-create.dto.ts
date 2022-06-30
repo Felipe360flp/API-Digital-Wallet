@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Category } from '@prisma/client';
-import {IsNumber, IsString } from 'class-validator';
+import {IsNumber, IsOptional, IsString, IsUUID } from 'class-validator';
 
 
 export class CreateUserDto {
@@ -22,9 +22,11 @@ Email:string;
 })
 Password:string;
 
+@IsUUID("all",{each:true})
+@IsOptional()
 @IsString()
 @ApiProperty({
-  example: 'abbb7373-c58c-4c14-bd06-c7ae0a703ea7',
+  example: 'Id da categoria',
 })
 categoryID:string;
 }

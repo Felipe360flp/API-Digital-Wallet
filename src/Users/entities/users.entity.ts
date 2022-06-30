@@ -5,7 +5,7 @@ export class User {
   Name:string;
   Email:string;
   Password:number;
-  category?:Category[];
+  category?:Category;
   createdAt?:Date;
   updatedAt?:Date;
 }

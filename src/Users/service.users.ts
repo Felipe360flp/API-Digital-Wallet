@@ -19,8 +19,8 @@ export class UserService {
     return this.prisma.user.findMany();
   }
 
-  async findById(Id: string){
-    const record = await this.prisma.user.findUnique({
+  findById(Id: string){
+    const record = this.prisma.user.findUnique({
       where: { Id },
     });
 
@@ -30,20 +30,20 @@ export class UserService {
     return record;
   }
 
-  async findOne(id: string) {
+  findOne(id: string) {
     return this.findById(id);
   }
 
   async create(dto: CreateUserDto) {
-      const data: Prisma.UserCreateInput = {
-        Name:dto.Name,
-        Email:dto.Email,
-        Password:await bcrypt.hash(dto.Password, 10),
-        category:{
-          connect:{
-            Id:dto.categoryID,
-          },
-        },
+    const data: Prisma.UserCreateInput = {
+      Name:dto.Name,
+      Email:dto.Email,
+      Password:await bcrypt.hash(dto.Password, 10),
+      category:{
+        connect:{
+          Id:dto.categoryID
+          }
+        }
       }
 
       return this.prisma.user
@@ -53,15 +53,17 @@ export class UserService {
             Id:true,
             Name:true,
             Email:true,
-            Password:true,
+            Password:false,
             category: {
               select: {
-                Title: true
+                Title: true,
+                Description:true
               }
           }
         }
       }).catch(handleError);
-    }
+  }
+
 
 
   async update(Id: string,dto: UpdateUserDto){
@@ -69,24 +71,32 @@ export class UserService {
 
     const data: Prisma.UserUpdateInput = {
       Name:dto.Name,
-        Email:dto.Email,
-        Password:await bcrypt.hash(dto.Password, 10),
-        category:{
-          connect:{
-            Id:dto.categoryID,
-          },
-        },
+      Email:dto.Email,
+      Password:await bcrypt.hash(dto.Password, 10),
+      category:{
+        connect:{
+          Id:dto.categoryID
+        }
       }
+    }
 
-    return this.prisma.category
+
+    return this.prisma.user
       .update({
       where: { Id },
       data,
       select: {
         Id:true,
-          Title:true,
-          Description:true,
-      },
+        Name:true,
+        Email:true,
+        Password:false,
+        category: {
+          select: {
+            Title: true,
+            Description:true
+          }
+        }
+      }
     }).catch(handleError);
   }
 

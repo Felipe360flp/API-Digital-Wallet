@@ -8,6 +8,9 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Category } from './entities/category-entity';
 import { CategoryService } from './Service.category';
+import { isAdmin } from 'src/Utils/isAdmin.utils';
+import { User } from 'src/Users/entities/users.entity';
+import { LoggedUser } from 'src/Auth/logged-user.decorator';
 
 @ApiTags('Category')
 @Controller('Category')
@@ -58,7 +61,8 @@ export class CategoryController {
   })
   @UseGuards(AuthGuard())
   @ApiBearerAuth()
-  update(@Param('id') id: string, @Body() dto: UpdateCategoryDto){
+  update(@Param('id') id: string, @Body() dto: UpdateCategoryDto,@LoggedUser() user:User){
+    isAdmin(user);
     return this.categoryService.update(id, dto);
   }
 
@@ -69,7 +73,8 @@ export class CategoryController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(AuthGuard())
   @ApiBearerAuth()
-  delete(@Param('id') id: string) {
+  delete(@Param('id') id: string,@LoggedUser() user:User) {
+    isAdmin(user);
     this.categoryService.delete(id);
   }
 }
