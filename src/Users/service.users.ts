@@ -16,7 +16,12 @@ export class UserService {
   constructor(private readonly prisma: PrismaService){}
 
   findAll(){
-    return this.prisma.user.findMany();
+    return this.prisma.user.findMany({
+      select:{
+        Name:true,
+        Email:true,
+      }
+    });
   }
 
   findById(Id: string){
