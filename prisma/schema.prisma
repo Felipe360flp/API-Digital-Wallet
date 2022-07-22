@@ -8,21 +8,25 @@ datasource db {
 }
 
 model User {
-  Id  String @id @default(uuid())
-  Name String
-  Email String    @unique
-  Password String
+  id  String @id @default(uuid())
+  name String
+  email String    @unique
+  password String
+  confirmPassword String
+  cpf_cnpj Int @unique
+  wallet Float
 
-  category Category @relation(fields: [categoryID],references: [Id])
+  transaction Transaction[]
+
+  category Category @relation(fields: [categoryID],references: [id])
   categoryID String @map("category_id")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  @@map("user")
 }
 
 model Category {
-  Id String @id @default(uuid())
+  id String @id @default(uuid())
   Title String    @unique
   Description String
 
@@ -30,6 +34,32 @@ model Category {
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  @@map("category")
 }
+
+model Transaction{
+  id String @id @default(uuid())
+
+  payerID String
+  value Float
+
+  user User @relation(fields: [userID],references: [id])
+  userID String @map("user_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+}
+
+model Transaction{
+  id String @id @default(uuid())
+
+  payerID String
+  value Float
+
+  user User @relation(fields: [userID],references: [id])
+  userID String @map("user_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+}
+
 

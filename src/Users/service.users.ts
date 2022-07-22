@@ -18,19 +18,19 @@ export class UserService {
   findAll(){
     return this.prisma.user.findMany({
       select:{
-        Name:true,
-        Email:true,
+        name:true,
+        email:true,
       }
     });
   }
 
-  findById(Id: string){
+  findById(id: string){
     const record = this.prisma.user.findUnique({
-      where: { Id },
+      where: { id },
     });
 
     if (!record) {
-      throw new NotFoundException(`Registro com o ID '${Id}' não encontrado.`);
+      throw new NotFoundException(`Registro com o ID '${id}' não encontrado.`);
     }
     return record;
   }
@@ -41,12 +41,15 @@ export class UserService {
 
   async create(dto: CreateUserDto) {
     const data: Prisma.UserCreateInput = {
-      Name:dto.Name,
-      Email:dto.Email,
-      Password:await bcrypt.hash(dto.Password, 10),
+      name:dto.name,
+      cpf_cnpj:dto.cpf_cnpj,
+      email:dto.email,
+      password:await bcrypt.hash(dto.password, 10),
+      confirmPassword: await bcrypt.hash(dto.password, 10),
+      wallet:0,
       category:{
         connect:{
-          Id:dto.categoryID
+          id:dto.categoryID
           }
         }
       }
@@ -55,10 +58,10 @@ export class UserService {
       .create({
           data,
           select: {
-            Id:true,
-            Name:true,
-            Email:true,
-            Password:false,
+            id:true,
+            name:true,
+            email:true,
+            password:false,
             category: {
               select: {
                 Title: true,
@@ -71,16 +74,17 @@ export class UserService {
 
 
 
-  async update(Id: string,dto: UpdateUserDto){
-    await this.findById(Id);
+  async update(id: string,dto: UpdateUserDto){
+    await this.findById(id);
 
     const data: Prisma.UserUpdateInput = {
-      Name:dto.Name,
-      Email:dto.Email,
-      Password:await bcrypt.hash(dto.Password, 10),
+      name:dto.name,
+      email:dto.email,
+      password:await bcrypt.hash(dto.password, 10),
+      confirmPassword:await bcrypt.hash(dto.password, 10),
       category:{
         connect:{
-          Id:dto.categoryID
+          id:dto.categoryID
         }
       }
     }
@@ -88,13 +92,14 @@ export class UserService {
 
     return this.prisma.user
       .update({
-      where: { Id },
+      where: { id },
       data,
       select: {
-        Id:true,
-        Name:true,
-        Email:true,
-        Password:false,
+        id:true,
+        name:true,
+        email:true,
+        password:false,
+        confirmPassword:false,
         category: {
           select: {
             Title: true,
@@ -106,10 +111,9 @@ export class UserService {
   }
 
 
-  async delete(Id: string) {
-    await this.findById(Id);
-
-    await this.prisma.category.delete({ where: { Id } });
+  async delete(id: string) {
+    await this.findById(id);
+    await this.prisma.user.delete({ where: { id } });
   }
 
 }

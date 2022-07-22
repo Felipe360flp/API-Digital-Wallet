@@ -42,20 +42,8 @@ export class UserController{
 
   @IsUppercase()
   create(@Body() createUserDto: CreateUserDto) {
-
-    if(
-      !createUserDto.Name ||
-      !createUserDto.Email ||
-      !createUserDto.Password||
-      !createUserDto.categoryID
-      ){
-        return console.log("it is necessary to fill in all the fields!")
-      }
-      else{
-      return this.userService.create(createUserDto);
-      }
+    return this.userService.create(createUserDto);
   }
-
 
   @IsUppercase()
   @Patch(':id')

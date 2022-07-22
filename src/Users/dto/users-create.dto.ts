@@ -6,27 +6,39 @@ import {IsNumber, IsOptional, IsString, IsUUID } from 'class-validator';
 export class CreateUserDto {
 @IsString()
 @ApiProperty({
-  example: 'Junior lima de oliveira',
+  example:'Afonso de campos nunes',
 })
-Name:string;
+name:string;
 
 @IsString()
 @ApiProperty({
-  example: 'junin.oliveira@gmail.com',
+  example: 'Acamposn@gmail.com',
 })
-Email:string;
+email:string;
 
 @IsString()
 @ApiProperty({
-  example: 'Junior@123',
+  example: 'Afonso@123',
 })
-Password:string;
+password:string;
+
+@IsString()
+@ApiProperty({
+  example: 'Afonso@123',
+})
+confirmPassword:string;
+
+@IsNumber()
+@ApiProperty({
+  example: '05865489956',
+})
+cpf_cnpj:number;
 
 @IsUUID("all",{each:true})
 @IsOptional()
 @IsString()
 @ApiProperty({
-  example: 'Id da categoria',
+  example: 'djkhsahidsajdklsajhkldhsau',
 })
 categoryID:string;
 }
