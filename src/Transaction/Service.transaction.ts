@@ -1,101 +1,95 @@
-import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, Param, UnprocessableEntityException } from '@nestjs/common';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
-import { UpdateTransactionDto } from './dto/update-transaction.dto';
-import {Transaction} from './entities/transaction-entity';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { identity } from 'rxjs';
-import { stringify } from 'querystring';
 import { handleError } from 'src/Utils/handle-error.util';
 import { Prisma } from '@prisma/client';
-import { isUppercase } from 'class-validator';
 import { User } from 'src/Users/entities/users.entity';
-import { userInfo } from 'os';
-import { LoggedUser } from 'src/Auth/logged-user.decorator';
-
+import { isAdmin } from 'src/Utils/isAdmin.utils';
 
 @Injectable()
 export class TransactionService {
 
   constructor(private readonly prisma: PrismaService) {}
 
-  findAll(user:User) {
-    return this.prisma.transaction.findMany({where:{id:user.id}});
+  async findAll(user:User) {
+      return await this.prisma.transaction.findMany({
+        where:{payerID:user.id},
+        select:{
+          payee:{
+            select:{
+              id:true,
+              name:true,
+            }
+          },
+          value:true
+        }
+      });
   }
 
-  findById(@LoggedUser() user:User){
-    const record =  this.prisma.transaction.findUnique({ where:{id:user.id}});
+  findById(id:string){
+    const record =  this.prisma.transaction.findUnique({ where:{id:id}});
 
     if (!record) {
-      throw new NotFoundException(`Registro com o '${user.id}' não encontrado.`)
+      throw new NotFoundException(`Registro com o '${id}' não encontrado.`)
     }
 
     return record;
   }
 
-  create(user:User,dto: CreateTransactionDto) {
-    const data: Prisma.TransactionCreateInput = {
-      value:dto.value,
-      user:{
-        connect:
-        {
-          id:user.id
-        }
+  async sendValue(dto: CreateTransactionDto,user:User){
+
+      const data: Prisma.TransactionCreateInput = {
+        payerID:user.id,
+        payee:{
+          connect:{
+            id:dto.payeeID
+          }
+        },
+        value:dto.value
       }
-    }
+
+    const receiver = await this.prisma.user.findUnique({where:{id:dto.payeeID}});
+
+    await this.prisma.user.update({
+      where:{id:user.id},
+      data:{
+      wallet:user.wallet - dto.value
+      },
+    });
+
+    await this.prisma.user.update({
+      where:{id:receiver.id},
+      data:{
+      wallet:receiver.wallet + dto.value
+      }
+    });
 
     return this.prisma.transaction
       .create({
         data,
-        select: {
-          value: true,
-          receiverID:true,
-          user:
-          {
+        select:{
+          payerID:true,
+          payee:{
             select:{
               id:true,
-              name:true,
+              name:true
             }
-          }
+          },
+          value:true
         }
       }).catch(handleError);
-  }
-
-
-
-    update(user:User, dto: UpdateTransactionDto){
-      this.findOne(user.id);
-      const data: Prisma.TransactionUpdateInput = {
-        value:dto.value,
-        receivedID:dto.receiverID,
-        user:{
-          connect:
-          {
-            id:user.id
-          }
-        }
     }
 
-    return this.prisma.transaction
-    .update({
-      where: {id},
-      data,
-      select: {
-        value:true,
-        receiverID:true,
-        user:{
-          select:
-          {
-            id:true,
-            Name:true,
-          }
-        }
-      },
-    }).catch(handleError);
-  }
 
-  async delete(id: string) {
-    await this.findOne(id);
-    await this.prisma.category.delete({ where: {id} });
+    async reverseTransaction(id:string,user:User){
+      this.findById(user.id);
+    }
+
+  async delete(id: string,user:User) {
+    isAdmin(user);
+    this.findById(id);
+    throw new BadRequestException('Transação deletada com sucesso!');
+    await this.prisma.transaction.delete({ where: {id} });
   }
 
 }

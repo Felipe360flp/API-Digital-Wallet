@@ -2,11 +2,14 @@ import { User } from "src/Users/entities/users.entity";
 
 export class Transaction {
   id?:string;
+  payerID:String;
+  payee:User;
   value:number;
-  payerID:User;
-  payeeID:User;
   createdAt?:Date;
   updatedAt?:Date;
 }
+
+
+
 
 

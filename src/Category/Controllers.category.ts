@@ -21,8 +21,6 @@ export class CategoryController {
   @ApiOperation({
     summary: 'Listar os tipos de categoria disponíveis',
   })
-  @UseGuards(AuthGuard())
-  @ApiBearerAuth()
   findAll() {
     return this.categoryService.findAll();
   }
@@ -31,8 +29,7 @@ export class CategoryController {
   @ApiOperation({
     summary: 'Localizar uma categoria',
   })
-  @UseGuards(AuthGuard())
-  @ApiBearerAuth()
+  
   findOne(@Param('id') id: string){
     return this.categoryService.findOne(id);
   }
@@ -59,8 +56,6 @@ export class CategoryController {
   @ApiOperation({
     summary: 'Alterar uma categoria',
   })
-  @UseGuards(AuthGuard())
-  @ApiBearerAuth()
   update(@Param('id') id: string, @Body() dto: UpdateCategoryDto,@LoggedUser() user:User){
     isAdmin(user);
     return this.categoryService.update(id, dto);
@@ -71,8 +66,6 @@ export class CategoryController {
     summary: 'Deletar uma categoria',
   })
   @HttpCode(HttpStatus.NO_CONTENT)
-  @UseGuards(AuthGuard())
-  @ApiBearerAuth()
   delete(@Param('id') id: string,@LoggedUser() user:User) {
     isAdmin(user);
     this.categoryService.delete(id);

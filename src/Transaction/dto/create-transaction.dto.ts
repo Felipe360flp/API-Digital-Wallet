@@ -1,25 +1,22 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { User } from '@prisma/client';
 import {IsNumber,IsString} from 'class-validator';
 
 
 export class CreateTransactionDto {
 
   @IsString()
-@ApiProperty({
-  example: 'Id do usuário que está enviando o valor',
-})
-payerID:string;
+  @ApiProperty({
+    description:'Id do destinatário',
+  example: 'a558e119-4bbb-4158-afeb-58a7805ed5dd',
+  })
+  payeeID:string;
 
-@IsNumber()
-@ApiProperty({
-  example: 'Valor da transferência',
-})
-value:number;
+  @IsNumber()
+  @ApiProperty({
+    description:'Valor da transferência',
+  example: '150',
+  })
+  value:number;
+  }
 
-@IsString()
-@ApiProperty({
-  example: 'Id do usuário que está recebendo',
-})
-payeeID:string;
-}
+

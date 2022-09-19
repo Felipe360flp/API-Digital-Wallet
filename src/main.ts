@@ -9,13 +9,14 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   const config = new DocumentBuilder()
-    .setTitle('API-GEO-USERS')
-    .setDescription('Aplicação para gestão de usuários')
+    .setTitle('API-DigitalWallet')
+    .setDescription('Carteira digital')
     .setVersion('1.0.0')
-    .addTag('status')
+    .addTag('Status')
     .addTag('Auth')
     .addTag('Users')
     .addTag("Category")
+    .addTag("Transaction")
     .addBearerAuth()
     .build();
 

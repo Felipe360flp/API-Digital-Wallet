@@ -71,6 +71,8 @@ $ npm run test:cov
 ```
 ## Swagger (test)
 
+Durante o teste, crie primeiro alguma categoria, pois a criação do usuário dependerá da mesma.
+
 http://localhost:3333/api/
 
 ## Support

@@ -12,14 +12,13 @@ model User {
   name String
   email String    @unique
   password String
-  confirmPassword String
-  cpf_cnpj Int @unique
-  wallet Float
+  cpf_cnpj String @unique
+  wallet Float?
 
-  transaction Transaction[]
+  transactions Transaction[]
 
   category Category @relation(fields: [categoryID],references: [id])
-  categoryID String @map("category_id")
+  categoryID String
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -40,26 +39,18 @@ model Transaction{
   id String @id @default(uuid())
 
   payerID String
-  value Float
 
-  user User @relation(fields: [userID],references: [id])
-  userID String @map("user_id")
+  payee User @relation(fields: [payeeID],references: [id])
+  payeeID String
+
+  value Float
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 }
 
-model Transaction{
-  id String @id @default(uuid())
 
-  payerID String
-  value Float
 
-  user User @relation(fields: [userID],references: [id])
-  userID String @map("user_id")
 
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-}
 
 

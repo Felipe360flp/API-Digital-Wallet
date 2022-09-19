@@ -1,25 +1,23 @@
-import { Injectable, NotAcceptableException, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/users-create.dto';
 import {UpdateUserDto} from './dto/users-update.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { handleError } from 'src/Utils/handle-error.util';
 import * as bcrypt from 'bcrypt';
-import { Prisma, User } from '@prisma/client';
-import { userInfo } from 'os';
-import { UpdateCategoryDto } from 'src/Category/dto/update-category.dto';
-import { Category } from 'src/Category/entities/category-entity';
-import { identity } from 'rxjs';
-import { CreateCategoryDto } from 'src/Category/dto/create-category.dto';
+import { Prisma} from '@prisma/client';
+import { User } from './entities/users.entity';
 
 @Injectable()
 export class UserService {
   constructor(private readonly prisma: PrismaService){}
 
-  findAll(){
-    return this.prisma.user.findMany({
+  async findAll(){
+    return await this.prisma.user.findMany({
       select:{
         name:true,
         email:true,
+        cpf_cnpj:true,
+        wallet:true
       }
     });
   }
@@ -30,7 +28,7 @@ export class UserService {
     });
 
     if (!record) {
-      throw new NotFoundException(`Registro com o ID '${id}' não encontrado.`);
+      throw new BadRequestException('As senhas informadas não são iguais.');
     }
     return record;
   }
@@ -39,73 +37,104 @@ export class UserService {
     return this.findById(id);
   }
 
-  async create(dto: CreateUserDto) {
+  async createADM(dto: CreateUserDto) {
+
+    if (dto.password != dto.confirmPassword) {
+      throw new BadRequestException('As senhas informadas não são iguais.');
+    }
+
+    delete dto.confirmPassword;
+
     const data: Prisma.UserCreateInput = {
       name:dto.name,
       cpf_cnpj:dto.cpf_cnpj,
       email:dto.email,
       password:await bcrypt.hash(dto.password, 10),
-      confirmPassword: await bcrypt.hash(dto.password, 10),
-      wallet:0,
       category:{
         connect:{
-          id:dto.categoryID
+          Title:'ADMIN',
+        }
+      }
+    }
+
+    return this.prisma.user
+    .create({
+      data,
+      select:{
+        name:true,
+        cpf_cnpj:true,
+        email:true,
+        password:false,
+        category:{
+          select:{
+            id:true,
           }
         }
       }
-
-      return this.prisma.user
-      .create({
-          data,
-          select: {
-            id:true,
-            name:true,
-            email:true,
-            password:false,
-            category: {
-              select: {
-                Title: true,
-                Description:true
-              }
-          }
-        }
-      }).catch(handleError);
+    });
   }
 
 
+  async create(dto: CreateUserDto) {
 
-  async update(id: string,dto: UpdateUserDto){
-    await this.findById(id);
+    if (dto.password != dto.confirmPassword) {
+      throw new BadRequestException('As senhas informadas não são iguais.');
+    }
+
+    delete dto.confirmPassword;
+
+    const data: Prisma.UserCreateInput = {
+      name:dto.name,
+      cpf_cnpj:dto.cpf_cnpj,
+      email:dto.email,
+      password:await bcrypt.hash(dto.password, 10),
+      category:{
+        connect:{
+          Title:'COMMON',
+        }
+      }
+    }
+
+    return this.prisma.user
+    .create({
+      data,
+      select:{
+        name:true,
+        cpf_cnpj:true,
+        email:true,
+        password:false,
+        category:{
+          select:{
+            Title:true,
+          }
+        }
+      }
+    });
+  }
+
+  async update(dto: UpdateUserDto,user:Partial<User>){
+    await this.findById(user.id);
+
+    if (dto.password != dto.confirmPassword) {
+      throw new BadRequestException('As senhas informadas não são iguais.');
+    }
+
+    delete dto.confirmPassword;
 
     const data: Prisma.UserUpdateInput = {
       name:dto.name,
       email:dto.email,
       password:await bcrypt.hash(dto.password, 10),
-      confirmPassword:await bcrypt.hash(dto.password, 10),
-      category:{
-        connect:{
-          id:dto.categoryID
-        }
-      }
     }
-
-
     return this.prisma.user
       .update({
-      where: { id },
+      where: {id:user.id},
       data,
       select: {
         id:true,
         name:true,
         email:true,
         password:false,
-        confirmPassword:false,
-        category: {
-          select: {
-            Title: true,
-            Description:true
-          }
-        }
       }
     }).catch(handleError);
   }

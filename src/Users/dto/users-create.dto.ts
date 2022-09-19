@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Category } from '@prisma/client';
-import {IsNumber, IsOptional, IsString, IsUUID } from 'class-validator';
+import {IsEmail, IsNumber, IsString, IsUUID } from 'class-validator';
 
 
 export class CreateUserDto {
@@ -10,7 +10,7 @@ export class CreateUserDto {
 })
 name:string;
 
-@IsString()
+@IsEmail()
 @ApiProperty({
   example: 'Acamposn@gmail.com',
 })
@@ -24,21 +24,17 @@ password:string;
 
 @IsString()
 @ApiProperty({
-  example: 'Afonso@123',
+  example:'Afonso@123',
 })
 confirmPassword:string;
 
-@IsNumber()
 @ApiProperty({
-  example: '05865489956',
+  example:'05865489956'
 })
-cpf_cnpj:number;
+cpf_cnpj:string;
 
-@IsUUID("all",{each:true})
-@IsOptional()
-@IsString()
-@ApiProperty({
-  example: 'djkhsahidsajdklsajhkldhsau',
-})
-categoryID:string;
 }
+
+
+
+

@@ -5,13 +5,15 @@ import { LoginResponseDto } from './dto/login-response.dto';
 import { LoginDto } from './dto/login.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { UseGuards } from '@nestjs/common';
+import { LoggedUser } from '../Auth/logged-user.decorator';
+import { User } from '../Users/entities/users.entity';
 
 @Controller('Auth')
 @ApiTags('Auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post()
+  @Post('/login')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Realizar login, recebendo um token de autenticação',
@@ -21,13 +23,13 @@ export class AuthController {
     return this.authService.login(loginDto);
   }
 
-  @Get()
-  @UseGuards(AuthGuard())
+  @Get('/profile')
   @ApiOperation({
     summary: 'Retorna o usuário autenticado no momento',
   })
+  @UseGuards(AuthGuard())
   @ApiBearerAuth()
-  profile() {
-    return { message: 'Autenticação bem sucedida' };
+  profile(@LoggedUser() user:User){
+    return this.authService.Profile(user)
   }
 }

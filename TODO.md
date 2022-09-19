@@ -9,18 +9,19 @@
 - [x] Testar API
 - [x] Readme
 - [x] Incluir a função isAdmin nos campos devidos
-- [x] Criar a rota de criação de usuário nível "ADM".
 - [x] Incluir a função loggedUser nos campos devidos
-- [x] CRUD completo de todas as entidades
 
 ### In Progress
 
-- [x] crud da entidade transaction
+- [x] CRUD completo de todas as entidades
+- [x] Finalizar reverseTransaction (Transaction)
 
 ### Done ✓
 
 - [x] Estrutura do banco de dados
 - [x] criar os relacionamentos entre as entidades
+- [x] Criar a rota de criação de usuário nível "ADM".
+
 
 
 
