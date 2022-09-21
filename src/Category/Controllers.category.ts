@@ -29,7 +29,7 @@ export class CategoryController {
   @ApiOperation({
     summary: 'Localizar uma categoria',
   })
-  
+
   findOne(@Param('id') id: string){
     return this.categoryService.findOne(id);
   }
@@ -57,7 +57,6 @@ export class CategoryController {
     summary: 'Alterar uma categoria',
   })
   update(@Param('id') id: string, @Body() dto: UpdateCategoryDto,@LoggedUser() user:User){
-    isAdmin(user);
     return this.categoryService.update(id, dto);
   }
 
@@ -67,7 +66,6 @@ export class CategoryController {
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   delete(@Param('id') id: string,@LoggedUser() user:User) {
-    isAdmin(user);
     this.categoryService.delete(id);
   }
 }

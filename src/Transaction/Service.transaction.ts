@@ -11,9 +11,21 @@ export class TransactionService {
 
   constructor(private readonly prisma: PrismaService) {}
 
-  async findAll(user:User) {
+  async findAll(userID:string) {
+
+    const user = await this.prisma.user.findUnique(
+      {where:{id:userID}
+    });
+
+    const category = await this.prisma.category.findUnique(
+      {where:{id:user.categoryID},
+      select:{Title:true}
+    })
+
+    isAdmin(category.Title);
+    
       return await this.prisma.transaction.findMany({
-        where:{payerID:user.id},
+        where:{payerID:userID},
         select:{
           payee:{
             select:{
@@ -80,13 +92,55 @@ export class TransactionService {
       }).catch(handleError);
     }
 
-
     async reverseTransaction(id:string,user:User){
-      this.findById(user.id);
+
+      const transaction = await this.prisma.transaction.findUnique({where:{id:id}});
+
+      const data: Prisma.TransactionCreateInput = {
+        payerID:transaction.payeeID,
+        payee:{
+          connect:{
+            id:transaction.payerID
+          }
+        },
+        value:transaction.value,
+        isReverse:true
+      }
+
+      const receiver = await this.prisma.user.findUnique({where:{id:transaction.payerID}});
+      const reversePayer = await this.prisma.user.findUnique({where:{id:transaction.payeeID}})
+
+    await this.prisma.user.update({
+      where:{id:receiver.id},
+      data:{
+      wallet:  receiver.wallet + transaction.value
+      },
+    });
+
+    await this.prisma.user.update({
+      where:{id:reversePayer.id},
+      data:{
+      wallet: reversePayer.wallet -  transaction.value
+      }
+    });
+
+    return this.prisma.transaction
+      .create({
+        data,
+        select:{
+          payerID:true,
+          payee:{
+            select:{
+              id:true,
+              name:true
+            }
+          },
+          value:true
+        }
+      }).catch(handleError);
     }
 
   async delete(id: string,user:User) {
-    isAdmin(user);
     this.findById(id);
     throw new BadRequestException('Transação deletada com sucesso!');
     await this.prisma.transaction.delete({ where: {id} });

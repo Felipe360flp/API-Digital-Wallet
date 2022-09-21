@@ -5,6 +5,7 @@ export class Transaction {
   payerID:String;
   payee:User;
   value:number;
+  isReverse:boolean;
   createdAt?:Date;
   updatedAt?:Date;
 }

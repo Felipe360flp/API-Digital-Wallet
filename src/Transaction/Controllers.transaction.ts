@@ -25,7 +25,7 @@ export class TransactionController {
     summary: 'Listar todas as transações do usuário logado',
   })
   findAll(@LoggedUser() user:User) {
-    return this.transactionService.findAll(user);
+    return this.transactionService.findAll(user.id);
   }
 
   @Get('/:id')
@@ -45,7 +45,7 @@ export class TransactionController {
   }
 
   @IsUppercase()
-  @Patch(':id')
+  @Post(':id')
   @ApiOperation({
     summary: 'Fazer um estorno de valores caso necessário (Admin)',
   })
@@ -60,7 +60,6 @@ export class TransactionController {
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   delete(@Param('id') id: string,@LoggedUser() user:User) {
-    isAdmin(user);
     return this.transactionService.delete(id,user);
   }
 }

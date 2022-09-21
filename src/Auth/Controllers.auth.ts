@@ -30,6 +30,6 @@ export class AuthController {
   @UseGuards(AuthGuard())
   @ApiBearerAuth()
   profile(@LoggedUser() user:User){
-    return this.authService.Profile(user)
+    return {Message:`Usuário(a): ${user.name} logado com sucesso!`}
   }
 }

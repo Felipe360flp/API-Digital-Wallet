@@ -1,13 +1,10 @@
 import { UnauthorizedException } from '@nestjs/common';
-import { User } from 'src/Users/entities/Users.entity';
-import { prisma, Prisma } from '@prisma/client';
-import { PrismaService } from '../prisma/prisma.service';
+import { Category } from 'src/Category/entities/category-entity';
 
 
-export function isAdmin(user: User) {
-  const data = user.category.Title;
-   if (user.category.Title != "adm") {
-    throw new UnauthorizedException('Você não tem permissão de admin');
+export  function isAdmin(Title:string) {
+   if (Title != "ADMIN") {
+    throw new UnauthorizedException('Você não tem permissão para executar esta tarefa!');
   }
 }
 

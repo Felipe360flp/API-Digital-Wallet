@@ -5,9 +5,6 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { LoginResponseDto } from './dto/login-response.dto';
 import { LoginDto } from './dto/login.dto';
 import { User } from 'src/Users/entities/users.entity';
-import { ApiBearerAuth } from '@nestjs/swagger';
-import { AuthGuard } from '@nestjs/passport';
-
 
 @Injectable()
 export class AuthService {
@@ -40,9 +37,5 @@ export class AuthService {
       token: this.jwtService.sign({ email }),
       user:undefined,
     };
-  }
-
-  async Profile(user:User){
-    return {message:`${user.name} Logado com sucesso!`};
   }
 }

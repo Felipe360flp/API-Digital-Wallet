@@ -74,7 +74,6 @@ export class UserController{
       @UseGuards(AuthGuard())
       @ApiBearerAuth()
       delete(@Param('id') id: string,@LoggedUser() user:User) {
-        isAdmin(user);
       this.userService.delete(id);
   }
 
